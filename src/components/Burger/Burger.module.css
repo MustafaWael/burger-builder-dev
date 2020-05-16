@@ -1,0 +1,59 @@
+.Burger {
+  width: 100%;
+  margin: auto;
+  padding: 20px 0;
+  height: 250px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  overflow-Y: scroll;
+	color: #00000000;
+  transition: all .3s ease-in-out;
+}
+
+.Burger p {
+  color: white !important;
+}
+
+.Burger:hover {
+  color: #666666FF;
+}
+
+::-webkit-scrollbar {
+	width: 14px;
+}
+::-webkit-scrollbar-thumb {
+	background-clip: content-box;
+	border: 4px solid transparent;
+	border-radius: 7px;
+	box-shadow: inset 0 0 0 10px;
+}
+::-webkit-scrollbar-button {
+	width: 0;
+	height: 0;
+	display: none;
+}
+::-webkit-scrollbar-corner {
+	background-color: transparent;
+}
+
+@media (min-width: 500px) and (min-height: 400px) {
+  .Burger {
+      width: 350px;
+      height: 300px;
+  }
+}
+
+@media (min-width: 500px) and (min-height: 401px) {
+  .Burger {
+      width: 450px;
+      height: 400px;
+  }
+}
+
+@media (min-width: 1000px) and (min-height: 700px) {
+  .Burger {
+      width: 700px;
+      height: 600px;
+  }
+}
