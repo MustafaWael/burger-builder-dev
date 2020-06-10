@@ -4,6 +4,7 @@ import Aux from '../AuxComponent/Aux'
 import Toolbar from '../../components/Navigation/Toolbar/Toolbar'
 import SideDrawer from '../../components/Navigation/SideDrawer/SideDrawer'
 
+import { connect } from 'react-redux'
 document.querySelector('body').className = classes.bgDark
 
 
@@ -23,8 +24,14 @@ class Layout extends Component {
   render() {
     return (
       <Aux>
-        <Toolbar drawerToggleClicked={this.sideDrawerOpenedHandler} />
-        <SideDrawer open={this.state.showSideDrawer} closed={this.sideDrawerClosedHandler} />
+        <Toolbar
+          auth={this.props.auth}
+          drawerToggleClicked={this.sideDrawerOpenedHandler}
+        />
+        <SideDrawer
+          auth={this.props.auth}
+          open={this.state.showSideDrawer} closed={this.sideDrawerClosedHandler}
+        />
         <main className={classes.Content}>
           {this.props.children}
         </main>
@@ -33,4 +40,8 @@ class Layout extends Component {
   }
 }
 
-export default Layout
+const mapState = state => ({
+  auth: !state.auth.token
+})
+
+export default connect(mapState)(Layout)

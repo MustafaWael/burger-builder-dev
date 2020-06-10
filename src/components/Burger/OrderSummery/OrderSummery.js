@@ -35,11 +35,11 @@ class OrderSummery extends Component {
         </Button>
 
 
-          <Button
-            btnType='Success'
-            clicked={() => this.props.continued('cancel')}
-          >
-            CONTINUE
+        <Button
+          btnType='Success'
+          clicked={() => this.props.continued()}
+        >
+          CONTINUE
         </Button>
 
       </Aux>

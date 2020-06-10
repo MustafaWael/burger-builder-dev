@@ -2,7 +2,18 @@ export {
   addIngredient,
   removeIngredient,
   setIngredients,
-  initialIngredients
+  initialIngredients,
 } from './burgerBuilder'
 
-export { } from './order'
+export {
+  purchaseBurger,
+  onOrderPurchased,
+  fetchOrders
+} from './order'
+
+export {
+  auth,
+  authLogout,
+  setAuthPath,
+  checkLoginStatus
+} from './auth'
