@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import Layout from './hoc/Layout/Layout'
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder'
 import Checkout from './containers/Checkout/Checkout.js'
@@ -19,20 +19,20 @@ class App extends React.Component {
       <div>
         <Layout>
           <Switch>
-            <Route path='/' exact component={BurgerBuilder} />
-            <Route path='/checkout' component={Checkout} />
-            <Route path='/auth' component={Auth} />
-            <Route path='/orders' component={Orders} />
-            <Route path='/logout' component={Logout} />
+            <Route path="/" exact component={BurgerBuilder} />
+            <Route path="/checkout" component={Checkout} />
+            <Route path="/auth" component={Auth} />
+            <Route path="/orders" component={Orders} />
+            <Route path="/logout" component={Logout} />
           </Switch>
         </Layout>
       </div>
-    );
+    )
   }
 }
 
-const mapDispatch = dispatch => ({
-  onCheckLoginStatus: () => dispatch(checkLoginStatus())
+const mapDispatch = (dispatch) => ({
+  onCheckLoginStatus: () => dispatch(checkLoginStatus()),
 })
 
-export default connect(null, mapDispatch)(App);
+export default connect(null, mapDispatch)(App)
