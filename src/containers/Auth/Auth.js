@@ -5,6 +5,7 @@ import Input from '../../components/Ui/Input/Input'
 import Button from '../../components/Ui/Button/Button'
 import Spinner from '../../components/Ui/Spinner/Spinner'
 
+import { checkValidaity } from '../../shared/utils'
 import { auth, setAuthPath } from '../../store/actions/index'
 import { connect } from 'react-redux'
 
@@ -16,21 +17,21 @@ class Auth extends Component {
         value: '',
         elementConfig: {
           type: 'email',
-          placeholder: 'Your E-mail'
+          placeholder: 'Your E-mail',
         },
         validation: {
           required: true,
-          isEmail: true
+          isEmail: true,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       password: {
         elementType: 'input',
         value: '',
         elementConfig: {
           type: 'password',
-          placeholder: 'password'
+          placeholder: 'password',
         },
         validation: {
           required: true,
@@ -42,23 +43,25 @@ class Auth extends Component {
       },
     },
     formIsValid: false,
-    isSignUp: true
+    isSignUp: true,
   }
-
 
   changedHandler = (ev, inputId) => {
     const { value: evTargetValue } = ev.target
     const updatedOrderForm = {
-      ...this.state.orderForm
+      ...this.state.orderForm,
     }
 
     const { validation } = updatedOrderForm[inputId]
 
-    updatedOrderForm[inputId].value = evTargetValue;
+    updatedOrderForm[inputId].value = evTargetValue
 
     if (updatedOrderForm[inputId].elementType !== 'select') {
       updatedOrderForm[inputId].touched = true
-      updatedOrderForm[inputId].valid = this.checkValidaity(evTargetValue, validation)
+      updatedOrderForm[inputId].valid = checkValidaity(
+        evTargetValue,
+        validation
+      )
     }
 
     let formIsValid = true
@@ -74,48 +77,52 @@ class Auth extends Component {
 
   errorMessage = (inputId, updatedOrderForm) => {
     if (inputId === 'password') {
-      if (!(updatedOrderForm.password.value.length > updatedOrderForm.password.validation.minLength))
+      if (
+        !(
+          updatedOrderForm.password.value.length >
+          updatedOrderForm.password.validation.minLength
+        )
+      )
         updatedOrderForm[inputId].errorMessage = 'should be greater than 5'
       else updatedOrderForm[inputId].errorMessage = ''
     }
   }
 
-  checkValidaity = (value, rules) => {
-    let isValid = true
-
-    if (!rules) {
-      return true;
-    }
-
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length > rules.minLength && isValid
-    }
-
-    if (rules.isEmail) {
-      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      isValid = pattern.test(value) && isValid
-    }
-
-    if (rules.isNumeric) {
-      const pattern = /^\d+$/;
-      isValid = pattern.test(value) && isValid
-    }
-
-    return isValid
-  }
-
+  // checkValidaity = (value, rules) => {
+  //   let isValid = true
+  //
+  //   if (!rules) {
+  //     return true
+  //   }
+  //
+  //   if (rules.required) {
+  //     isValid = value.trim() !== '' && isValid
+  //   }
+  //
+  //   if (rules.minLength) {
+  //     isValid = value.length > rules.minLength && isValid
+  //   }
+  //
+  //   if (rules.isEmail) {
+  //     const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+  //     isValid = pattern.test(value) && isValid
+  //   }
+  //
+  //   if (rules.isNumeric) {
+  //     const pattern = /^\d+$/
+  //     isValid = pattern.test(value) && isValid
+  //   }
+  //
+  //   return isValid
+  // }
 
   signUpToggle = () => {
-    this.setState(prevState => {
+    this.setState((prevState) => {
       return { isSignUp: !prevState.isSignUp }
     })
   }
 
-  authHandler = e => {
+  authHandler = (e) => {
     e.preventDefault()
     const { email, password } = this.state.orderForm
 
@@ -133,7 +140,7 @@ class Auth extends Component {
     for (const [key, val] of Object.entries(this.state.orderForm)) {
       formConfig.push({ id: key, config: val })
     }
-    const inputElement = formConfig.map(ele => {
+    const inputElement = formConfig.map((ele) => {
       return (
         <Input
           key={ele.id}
@@ -154,18 +161,22 @@ class Auth extends Component {
         <h4>Enter your contact data.</h4>
         <form onSubmit={this.authHandler}>
           {inputElement}
-          <Button btnType='Success' disabled={!this.state.formIsValid}>ORDER</Button>
+          <Button btnType="Success" disabled={!this.state.formIsValid}>
+            ORDER
+          </Button>
         </form>
-        <Button clicked={this.signUpToggle}>{this.state.isSignUp ? 'Sign in' : 'Sign up'}</Button>
+        <Button clicked={this.signUpToggle}>
+          {this.state.isSignUp ? 'Sign in' : 'Sign up'}
+        </Button>
       </>
     )
 
     let errorMessage = null
     if (this.props.error) {
       if (this.props.error.message.includes('EXIST'))
-        errorMessage = (<p>Sorry email exist, try another email</p>)
+        errorMessage = <p>Sorry email exist, try another email</p>
       if (this.props.error.message.includes('NOT_FOUND'))
-        errorMessage = (<p>Sorry you are not signed up!!</p>)
+        errorMessage = <p>Sorry you are not signed up!!</p>
     }
 
     if (this.props.loading) {
@@ -180,19 +191,20 @@ class Auth extends Component {
   }
 }
 
-const mapState = state => {
+const mapState = (state) => {
   const { auth, burgerBuilder } = state
   return {
     loading: auth.loading,
     error: auth.error,
     auth: auth.token,
     authPath: auth.authPath,
-    burgerBuild: burgerBuilder.building
+    burgerBuild: burgerBuilder.building,
   }
 }
 
-const mapDispatch = dispatch => ({
-  onAuth: (email, password, isSignUp) => dispatch(auth(email, password, isSignUp)),
-  onSetAuthPath: () => dispatch(setAuthPath('/'))
+const mapDispatch = (dispatch) => ({
+  onAuth: (email, password, isSignUp) =>
+    dispatch(auth(email, password, isSignUp)),
+  onSetAuthPath: () => dispatch(setAuthPath('/')),
 })
 export default connect(mapState, mapDispatch)(Auth)

@@ -6,6 +6,7 @@ import Spinner from '../../../components/Ui/Spinner/Spinner'
 import axios from '../../../axios-orders'
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler'
 
+import { checkValidaity } from '../../../shared/utils'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions/index'
 
@@ -18,27 +19,27 @@ class ContactData extends Component {
         value: '',
         elementConfig: {
           type: 'text',
-          placeholder: 'Your name'
+          placeholder: 'Your name',
         },
         validation: {
           required: true,
         },
         valid: false,
         touched: false,
-        errorMessage: ''
+        errorMessage: '',
       },
       street: {
         elementType: 'input',
         value: '',
         elementConfig: {
           type: 'text',
-          placeholder: 'Your street'
+          placeholder: 'Your street',
         },
         validation: {
           required: true,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       email: {
         elementType: 'input',
@@ -52,14 +53,14 @@ class ContactData extends Component {
           isEmail: true,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       password: {
         elementType: 'input',
         value: '',
         elementConfig: {
           type: 'text',
-          placeholder: 'password'
+          placeholder: 'password',
         },
         validation: {
           required: true,
@@ -74,20 +75,20 @@ class ContactData extends Component {
         value: '',
         elementConfig: {
           type: 'text',
-          placeholder: 'Your country'
+          placeholder: 'Your country',
         },
         validation: {
           required: true,
         },
         valid: false,
-        touched: false
+        touched: false,
       },
       zipCode: {
         elementType: 'input',
         value: '',
         elementConfig: {
           type: 'text',
-          placeholder: 'Zip code'
+          placeholder: 'Zip code',
         },
         validation: {
           required: true,
@@ -116,16 +117,19 @@ class ContactData extends Component {
   changedHandler = (ev, inputId) => {
     const { value: evTargetValue } = ev.target
     const updatedOrderForm = {
-      ...this.state.orderForm
+      ...this.state.orderForm,
     }
 
     const { validation } = updatedOrderForm[inputId]
 
-    updatedOrderForm[inputId].value = evTargetValue;
+    updatedOrderForm[inputId].value = evTargetValue
 
     if (updatedOrderForm[inputId].elementType !== 'select') {
       updatedOrderForm[inputId].touched = true
-      updatedOrderForm[inputId].valid = this.checkValidaity(evTargetValue, validation)
+      updatedOrderForm[inputId].valid = checkValidaity(
+        evTargetValue,
+        validation
+      )
     }
 
     let formIsValid = true
@@ -146,58 +150,36 @@ class ContactData extends Component {
     // }
 
     if (inputId === 'password') {
-      console.log(updatedOrderForm.password.value.length);
-      console.log(updatedOrderForm.password.validation.minLength);
-      console.log(updatedOrderForm.password.value.length < updatedOrderForm.password.validation.minLength);
+      console.log(updatedOrderForm.password.value.length)
+      console.log(updatedOrderForm.password.validation.minLength)
+      console.log(
+        updatedOrderForm.password.value.length <
+          updatedOrderForm.password.validation.minLength
+      )
 
-
-      if (!(updatedOrderForm.password.value.length >= updatedOrderForm.password.validation.minLength))
+      if (
+        !(
+          updatedOrderForm.password.value.length >=
+          updatedOrderForm.password.validation.minLength
+        )
+      )
         updatedOrderForm[inputId].errorMessage = 'should be greater than 4'
       else updatedOrderForm[inputId].errorMessage = ''
     }
 
     if (inputId === 'zipCode') {
-      console.log(this.state);
-      console.log(updatedOrderForm.zipCode);
+      console.log(this.state)
+      console.log(updatedOrderForm.zipCode)
 
-      if (updatedOrderForm.zipCode.value.length > updatedOrderForm.zipCode.validation.minLength ||
-        updatedOrderForm.zipCode.value.length < updatedOrderForm.zipCode.validation.maxLength
-      ) updatedOrderForm[inputId].errorMessage = 'should be 5'
+      if (
+        updatedOrderForm.zipCode.value.length >
+          updatedOrderForm.zipCode.validation.minLength ||
+        updatedOrderForm.zipCode.value.length <
+          updatedOrderForm.zipCode.validation.maxLength
+      )
+        updatedOrderForm[inputId].errorMessage = 'should be 5'
       else updatedOrderForm[inputId].errorMessage = ''
     }
-
-  }
-
-  checkValidaity = (value, rules) => {
-    let isValid = true
-
-    if (!rules) {
-      return true;
-    }
-
-    if (rules.required) {
-      isValid = value.trim() !== '' && isValid;
-    }
-
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid
-    }
-
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid
-    }
-
-    if (rules.isEmail) {
-      const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      isValid = pattern.test(value) && isValid
-    }
-
-    if (rules.isNumeric) {
-      const pattern = /^\d+$/;
-      isValid = pattern.test(value) && isValid
-    }
-
-    return isValid
   }
 
   OrderHandler = (e) => {
@@ -209,8 +191,9 @@ class ContactData extends Component {
     const order = {
       ingredients: this.props.ingredients,
       totalPrice: this.props.price,
-      orderData: orderForm
-    };
+      orderData: orderForm,
+      userId: this.props.userId,
+    }
 
     this._isMounted && this.props.onOrderBurger(order, this.props.token)
   }
@@ -228,7 +211,7 @@ class ContactData extends Component {
     for (const [key, val] of Object.entries(this.state.orderForm)) {
       formConfig.push({ id: key, config: val })
     }
-    const inputElement = formConfig.map(ele => {
+    const inputElement = formConfig.map((ele) => {
       return (
         <Input
           key={ele.id}
@@ -244,32 +227,38 @@ class ContactData extends Component {
       )
     })
 
-
     return (
       <div className={classes.ContactData}>
         <h4>Enter your contact data.</h4>
-        {
-          this.props.loading
-            ? <Spinner />
-            : <form onSubmit={this.OrderHandler}>
-              {inputElement}
-              <Button btnType='Success' disabled={!this.state.formIsValid}>ORDER</Button>
-            </form>
-        }
+        {this.props.loading ? (
+          <Spinner />
+        ) : (
+          <form onSubmit={this.OrderHandler}>
+            {inputElement}
+            <Button btnType="Success" disabled={!this.state.formIsValid}>
+              ORDER
+            </Button>
+          </form>
+        )}
       </div>
     )
   }
 }
 
-const mapState = state => ({
+const mapState = (state) => ({
   ingredients: state.burgerBuilder.ingredients,
   price: state.burgerBuilder.totalPrice,
   loading: state.order.loading,
-  token: state.auth.token
+  token: state.auth.token,
+  userId: state.auth.userId,
 })
 
-const mapActions = dispatch => ({
-  onOrderBurger: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
+const mapActions = (dispatch) => ({
+  onOrderBurger: (orderData, token) =>
+    dispatch(actions.purchaseBurger(orderData, token)),
 })
 
-export default connect(mapState, mapActions)(withErrorHandler(ContactData, axios))
+export default connect(
+  mapState,
+  mapActions
+)(withErrorHandler(ContactData, axios))

@@ -7,16 +7,16 @@ import { connect } from 'react-redux'
 
 class Checkout extends Component {
   cancelHandler = () => {
-    this.props.history.goBack()
-  };
+    this.props.history.replace('/')
+  }
 
   continueHandler = () => {
     this.props.history.replace('/checkout/contact-data')
-  };
+  }
 
   render() {
-    let summery = <Redirect to='/' />
-    const purchased = this.props.purchased ? <Redirect to='/' /> : null
+    let summery = <Redirect to="/" />
+    const purchased = this.props.purchased ? <Redirect to="/" /> : null
 
     if (this.props.ingredients) {
       summery = (
@@ -30,8 +30,8 @@ class Checkout extends Component {
 
           <Route
             path={`${this.props.match.path}/contact-data`}
-            component={ContactData}>
-          </Route>
+            component={ContactData}
+          ></Route>
         </div>
       )
     }
@@ -40,9 +40,9 @@ class Checkout extends Component {
   }
 }
 
-const mapState = state => ({
+const mapState = (state) => ({
   ingredients: state.burgerBuilder.ingredients,
-  purchased: state.order.purchased
+  purchased: state.order.purchased,
 })
 
 export default connect(mapState)(Checkout)

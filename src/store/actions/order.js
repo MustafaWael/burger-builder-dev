@@ -5,75 +5,75 @@ const purchaseBurgerSuccsess = (id, orderData) => {
   return {
     type: actionTypes.PURCHASE_BURGER_SUCCESS,
     orderId: id,
-    orderData
+    orderData,
   }
 }
 
-const purchaseBurgerFail = error => {
+const purchaseBurgerFail = (error) => {
   return {
     type: actionTypes.PURCHASE_BURGER_FAIL,
-    error
+    error,
   }
 }
 
 const purchaseBurgerStart = () => {
   return {
-    type: actionTypes.PURCHASE_BURGER_START
+    type: actionTypes.PURCHASE_BURGER_START,
   }
 }
 
 export const onOrderPurchased = () => {
   return {
-    type: actionTypes.PURCHASE_INIT
+    type: actionTypes.PURCHASE_INIT,
   }
 }
 
 export const purchaseBurger = (orderData, token) => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(purchaseBurgerStart())
-    axios.post(`/orders.json/?auth=${token}`, orderData)
-      .then(res => {
-        console.log(orderData);
-        console.log(res.data.name);
+    axios
+      .post(`/orders.json/?auth=${token}`, orderData)
+      .then((res) => {
+        console.log(orderData)
+        console.log(res.data.name)
 
         dispatch(purchaseBurgerSuccsess(res.data.name, orderData))
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch(purchaseBurgerFail(err))
       })
   }
 }
 
-
-export const fetchOrdersSuccsess = orders => ({
+export const fetchOrdersSuccsess = (orders) => ({
   type: actionTypes.FETCH_ORDERS_SUCCSESS,
-  orders
+  orders,
 })
 
 export const fetchOrdersStart = () => ({
-  type: actionTypes.FETCH_ORDERS_START
+  type: actionTypes.FETCH_ORDERS_START,
 })
 
 export const fetchOrdersFail = () => ({
-  type: actionTypes.FETCH_ORDERS_FAIL
+  type: actionTypes.FETCH_ORDERS_FAIL,
 })
 
-
-export const fetchOrders = (token) => {
-  return dispatch => {
+export const fetchOrders = (token, userId) => {
+  return (dispatch) => {
     dispatch(fetchOrdersStart())
-    axios.get(`/orders.json/?auth=${token}`)
-      .then(res => {
+    axios
+      .get(`/orders.json/?auth=${token}&orderBy="userId"&equalTo="${userId}"`)
+      .then((res) => {
         const orders = []
         for (const key in res.data) {
           orders.push({
             ...res.data[key],
-            id: key
+            id: key,
           })
         }
         dispatch(fetchOrdersSuccsess(orders))
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch(fetchOrdersFail(err))
       })
   }
