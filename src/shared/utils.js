@@ -36,3 +36,73 @@ export const checkValidaity = (value, rules) => {
 
   return isValid
 }
+
+export const changedHandler = (state, ev, inputId, setState, route) => {
+  const { value: evTargetValue } = ev.target
+  const updatedOrderForm = {
+    ...state.orderForm,
+  }
+
+  const { validation } = updatedOrderForm[inputId]
+
+  updatedOrderForm[inputId].value = evTargetValue
+
+  if (updatedOrderForm[inputId].elementType !== 'select') {
+    updatedOrderForm[inputId].touched = true
+    updatedOrderForm[inputId].valid = checkValidaity(evTargetValue, validation)
+  }
+
+  let formIsValid = true
+  for (const id in updatedOrderForm) {
+    if (updatedOrderForm[id].elementType !== 'select') {
+      formIsValid = updatedOrderForm[id]?.valid && formIsValid
+    }
+  }
+
+  route === 'auth'
+    ? authErrorMessage(inputId, updatedOrderForm)
+    : checkoutErrorMessage(inputId, updatedOrderForm)
+  setState({ orderForm: updatedOrderForm, formIsValid })
+}
+
+const authErrorMessage = (inputId, updatedOrderForm) => {
+  if (inputId === 'password') {
+    if (
+      !(
+        updatedOrderForm.password.value.length >
+        updatedOrderForm.password.validation.minLength
+      )
+    )
+      updatedOrderForm[inputId].errorMessage = 'should be greater than 5'
+    else updatedOrderForm[inputId].errorMessage = ''
+  }
+}
+
+const checkoutErrorMessage = (inputId, updatedOrderForm) => {
+  // if (inputId === 'name') {
+  //   if (updatedOrderForm[inputId].value.length < 12) updatedOrderForm[inputId].errorMessage = 'should be 12'
+  //   else updatedOrderForm[inputId].errorMessage = ''
+  // }
+
+  if (inputId === 'password') {
+    if (
+      !(
+        updatedOrderForm.password.value.length >=
+        updatedOrderForm.password.validation.minLength
+      )
+    )
+      updatedOrderForm[inputId].errorMessage = 'should be greater than 4'
+    else updatedOrderForm[inputId].errorMessage = ''
+  }
+
+  if (inputId === 'zipCode') {
+    if (
+      updatedOrderForm.zipCode.value.length >
+        updatedOrderForm.zipCode.validation.minLength ||
+      updatedOrderForm.zipCode.value.length <
+        updatedOrderForm.zipCode.validation.maxLength
+    )
+      updatedOrderForm[inputId].errorMessage = 'should be 5'
+    else updatedOrderForm[inputId].errorMessage = ''
+  }
+}

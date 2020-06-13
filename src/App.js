@@ -1,11 +1,8 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Layout from './hoc/Layout/Layout'
 import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder'
-import Checkout from './containers/Checkout/Checkout.js'
-import Orders from './containers/Orders/Orders'
-import Auth from './containers/Auth/Auth'
-import Logout from './containers/Auth/Logout/Logout'
-import { Route, Switch, Redirect } from 'react-router-dom'
+// import Logout from './containers/Auth/Logout/Logout'
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom'
 
 import { connect } from 'react-redux'
 import { checkLoginStatus } from './store/actions/index'
@@ -16,10 +13,26 @@ class App extends React.Component {
   }
 
   render() {
+    const AsyncAuth = React.lazy(() => import('./containers/Auth/Auth'))
+    const AsyncOrders = React.lazy(() => import('./containers/Orders/Orders'))
+    const AsyncCheckout = React.lazy(() =>
+      import('./containers/Checkout/Checkout')
+    )
+    const AsyncLogout = React.lazy(() =>
+      import('./containers/Auth/Logout/Logout')
+    )
+
     let routes = (
       <Switch>
         <Route path="/" exact component={BurgerBuilder} />
-        <Route path="/auth" component={Auth} />
+        <Route
+          path="/auth"
+          render={() => (
+            <Suspense fallback={<div>Loading...</div>}>
+              <AsyncAuth />
+            </Suspense>
+          )}
+        />
         <Redirect to="/" />
       </Switch>
     )
@@ -28,10 +41,38 @@ class App extends React.Component {
       routes = (
         <Switch>
           <Route path="/" exact component={BurgerBuilder} />
-          <Route path="/checkout" component={Checkout} />
-          <Route path="/orders" component={Orders} />
-          <Route path="/logout" component={Logout} />
-          <Route path="/auth" component={Auth} />
+          <Route
+            path="/checkout"
+            render={() => (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AsyncCheckout />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="/orders"
+            render={() => (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AsyncOrders />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="/logout"
+            render={() => (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AsyncLogout />
+              </Suspense>
+            )}
+          />
+          <Route
+            path="/auth"
+            render={() => (
+              <Suspense fallback={<div>Loading...</div>}>
+                <AsyncAuth />
+              </Suspense>
+            )}
+          />
           <Redirect to="/" />
         </Switch>
       )

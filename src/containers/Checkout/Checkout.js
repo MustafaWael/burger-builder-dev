@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import CheckoutSummery from '../../components/Order/CheckoutSummery/CheckoutSummery'
 import ContactData from './ContactData/ContactData'
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Redirect, withRouter } from 'react-router-dom'
 
 import { connect } from 'react-redux'
 
@@ -45,4 +45,4 @@ const mapState = (state) => ({
   purchased: state.order.purchased,
 })
 
-export default connect(mapState)(Checkout)
+export default withRouter(connect(mapState)(Checkout))

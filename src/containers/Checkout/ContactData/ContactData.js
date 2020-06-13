@@ -6,7 +6,7 @@ import Spinner from '../../../components/Ui/Spinner/Spinner'
 import axios from '../../../axios-orders'
 import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler'
 
-import { checkValidaity } from '../../../shared/utils'
+import { changedHandler } from '../../../shared/utils'
 import { connect } from 'react-redux'
 import * as actions from '../../../store/actions/index'
 
@@ -59,7 +59,7 @@ class ContactData extends Component {
         elementType: 'input',
         value: '',
         elementConfig: {
-          type: 'text',
+          type: 'password',
           placeholder: 'password',
         },
         validation: {
@@ -114,74 +114,6 @@ class ContactData extends Component {
     formIsValid: false,
   }
 
-  changedHandler = (ev, inputId) => {
-    const { value: evTargetValue } = ev.target
-    const updatedOrderForm = {
-      ...this.state.orderForm,
-    }
-
-    const { validation } = updatedOrderForm[inputId]
-
-    updatedOrderForm[inputId].value = evTargetValue
-
-    if (updatedOrderForm[inputId].elementType !== 'select') {
-      updatedOrderForm[inputId].touched = true
-      updatedOrderForm[inputId].valid = checkValidaity(
-        evTargetValue,
-        validation
-      )
-    }
-
-    let formIsValid = true
-    for (const id in updatedOrderForm) {
-      if (updatedOrderForm[id].elementType !== 'select') {
-        formIsValid = updatedOrderForm[id]?.valid && formIsValid
-      }
-    }
-
-    this.errorMessage(inputId, updatedOrderForm)
-    this.setState({ orderForm: updatedOrderForm, formIsValid })
-  }
-
-  errorMessage = (inputId, updatedOrderForm) => {
-    // if (inputId === 'name') {
-    //   if (updatedOrderForm[inputId].value.length < 12) updatedOrderForm[inputId].errorMessage = 'should be 12'
-    //   else updatedOrderForm[inputId].errorMessage = ''
-    // }
-
-    if (inputId === 'password') {
-      console.log(updatedOrderForm.password.value.length)
-      console.log(updatedOrderForm.password.validation.minLength)
-      console.log(
-        updatedOrderForm.password.value.length <
-          updatedOrderForm.password.validation.minLength
-      )
-
-      if (
-        !(
-          updatedOrderForm.password.value.length >=
-          updatedOrderForm.password.validation.minLength
-        )
-      )
-        updatedOrderForm[inputId].errorMessage = 'should be greater than 4'
-      else updatedOrderForm[inputId].errorMessage = ''
-    }
-
-    if (inputId === 'zipCode') {
-      console.log(this.state)
-      console.log(updatedOrderForm.zipCode)
-
-      if (
-        updatedOrderForm.zipCode.value.length >
-          updatedOrderForm.zipCode.validation.minLength ||
-        updatedOrderForm.zipCode.value.length <
-          updatedOrderForm.zipCode.validation.maxLength
-      )
-        updatedOrderForm[inputId].errorMessage = 'should be 5'
-      else updatedOrderForm[inputId].errorMessage = ''
-    }
-  }
-
   OrderHandler = (e) => {
     e.preventDefault()
     const orderForm = {}
@@ -222,7 +154,15 @@ class ContactData extends Component {
           shouldValidate={ele.config.validation}
           touched={ele.config.touched}
           errorMessage={ele.config.errorMessage}
-          changed={(ev) => this.changedHandler(ev, ele.id)}
+          changed={(ev) =>
+            changedHandler(
+              this.state,
+              ev,
+              ele.id,
+              this.setState.bind(this),
+              'checkout'
+            )
+          }
         />
       )
     })

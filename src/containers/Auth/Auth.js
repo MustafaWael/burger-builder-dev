@@ -5,7 +5,7 @@ import Input from '../../components/Ui/Input/Input'
 import Button from '../../components/Ui/Button/Button'
 import Spinner from '../../components/Ui/Spinner/Spinner'
 
-import { checkValidaity } from '../../shared/utils'
+import { changedHandler } from '../../shared/utils'
 import { auth, setAuthPath } from '../../store/actions/index'
 import { connect } from 'react-redux'
 
@@ -46,76 +46,6 @@ class Auth extends Component {
     isSignUp: true,
   }
 
-  changedHandler = (ev, inputId) => {
-    const { value: evTargetValue } = ev.target
-    const updatedOrderForm = {
-      ...this.state.orderForm,
-    }
-
-    const { validation } = updatedOrderForm[inputId]
-
-    updatedOrderForm[inputId].value = evTargetValue
-
-    if (updatedOrderForm[inputId].elementType !== 'select') {
-      updatedOrderForm[inputId].touched = true
-      updatedOrderForm[inputId].valid = checkValidaity(
-        evTargetValue,
-        validation
-      )
-    }
-
-    let formIsValid = true
-    for (const id in updatedOrderForm) {
-      if (updatedOrderForm[id].elementType !== 'select') {
-        formIsValid = updatedOrderForm[id]?.valid && formIsValid
-      }
-    }
-
-    this.errorMessage(inputId, updatedOrderForm)
-    this.setState({ orderForm: updatedOrderForm, formIsValid })
-  }
-
-  errorMessage = (inputId, updatedOrderForm) => {
-    if (inputId === 'password') {
-      if (
-        !(
-          updatedOrderForm.password.value.length >
-          updatedOrderForm.password.validation.minLength
-        )
-      )
-        updatedOrderForm[inputId].errorMessage = 'should be greater than 5'
-      else updatedOrderForm[inputId].errorMessage = ''
-    }
-  }
-
-  // checkValidaity = (value, rules) => {
-  //   let isValid = true
-  //
-  //   if (!rules) {
-  //     return true
-  //   }
-  //
-  //   if (rules.required) {
-  //     isValid = value.trim() !== '' && isValid
-  //   }
-  //
-  //   if (rules.minLength) {
-  //     isValid = value.length > rules.minLength && isValid
-  //   }
-  //
-  //   if (rules.isEmail) {
-  //     const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-  //     isValid = pattern.test(value) && isValid
-  //   }
-  //
-  //   if (rules.isNumeric) {
-  //     const pattern = /^\d+$/
-  //     isValid = pattern.test(value) && isValid
-  //   }
-  //
-  //   return isValid
-  // }
-
   signUpToggle = () => {
     this.setState((prevState) => {
       return { isSignUp: !prevState.isSignUp }
@@ -151,7 +81,15 @@ class Auth extends Component {
           shouldValidate={ele.config.validation}
           touched={ele.config.touched}
           errorMessage={ele.config.errorMessage}
-          changed={(ev) => this.changedHandler(ev, ele.id)}
+          changed={(ev) =>
+            changedHandler(
+              this.state,
+              ev,
+              ele.id,
+              this.setState.bind(this),
+              'auth'
+            )
+          }
         />
       )
     })
